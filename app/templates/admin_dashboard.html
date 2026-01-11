@@ -2,20 +2,209 @@
 
 {% block content %}
   <h2>Admin Dashboard</h2>
-  <h3>Upload Payslip</h3>
-  <form method="post" action="{{ url_for('upload_payslip') }}" enctype="multipart/form-data">
-    <div class="form-group">
-      <label for="employee_id">Select Employee</label>
-      <select class="form-control" id="employee_id" name="employee_id">
-        {% for employee in employees %}
-          <option value="{{ employee.id }}">{{ employee.username }}</option>
-        {% endfor %}
-      </select>
+
+  <ul class="nav nav-tabs" id="adminTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="finance-tab" data-toggle="tab" href="#finance" role="tab" aria-controls="finance" aria-selected="true">Finance</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="hr-tab" data-toggle="tab" href="#hr" role="tab" aria-controls="hr" aria-selected="false">HR</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="others-tab" data-toggle="tab" href="#others" role="tab" aria-controls="others" aria-selected="false">Others</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="admin-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="admin" aria-selected="false">Admin</a>
+    </li>
+  </ul>
+
+  <div class="tab-content mt-3" id="adminTabContent">
+    <div class="tab-pane fade show active" id="finance" role="tabpanel" aria-labelledby="finance-tab">
+      <!-- Employee Payslips Collapsible Section -->
+      <div class="card mb-3">
+        <div class="card-header bg-light font-weight-bold d-flex justify-content-between align-items-center" id="headingPayslips" style="cursor:pointer;" data-toggle="collapse" data-target="#collapsePayslips" aria-expanded="false" aria-controls="collapsePayslips">
+          <span>Employee Payslips</span>
+          <span class="collapse-icon" id="iconPayslips">&#9654;</span>
+        </div>
+        <div id="collapsePayslips" class="collapse" aria-labelledby="headingPayslips">
+          <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+            {% if employee_payslips %}
+              {% for employee, payslips in employee_payslips.items() %}
+                <div class="mb-2">
+                  <strong>{{ employee.first_name }} {{ employee.last_name }}</strong>
+                  <ul class="list-group list-group-flush">
+                    {% for payslip in payslips %}
+                      <li class="list-group-item py-1">
+                        <a href="{{ url_for('static', filename=payslip.file_path) }}" target="_blank">
+                          Payslip - {{ payslip.upload_date.strftime('%Y-%m-%d') }}
+                        </a>
+                      </li>
+                    {% else %}
+                      <li class="list-group-item py-1 text-muted">No payslips found.</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endfor %}
+            {% else %}
+              <p>No employees or payslips found.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <!-- Upload Payslip Collapsible Section -->
+      <div class="card">
+        <div class="card-header bg-light font-weight-bold d-flex justify-content-between align-items-center" id="headingUpload" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseUpload" aria-expanded="false" aria-controls="collapseUpload">
+          <span>Upload Payslip</span>
+          <span class="collapse-icon" id="iconUpload">&#9654;</span>
+        </div>
+        <div id="collapseUpload" class="collapse" aria-labelledby="headingUpload">
+          <script>
+            // Helper to toggle icon direction
+            function toggleIcon(section, iconId) {
+              var icon = document.getElementById(iconId);
+              if (section.classList.contains('show')) {
+                icon.innerHTML = '\u25BC'; // Down arrow
+              } else {
+                icon.innerHTML = '\u25B6'; // Right arrow
+              }
+            }
+            document.addEventListener('DOMContentLoaded', function() {
+              var payslipsSection = document.getElementById('collapsePayslips');
+              var payslipsIcon = document.getElementById('iconPayslips');
+              var uploadSection = document.getElementById('collapseUpload');
+              var uploadIcon = document.getElementById('iconUpload');
+              if (payslipsSection && payslipsIcon) {
+                payslipsSection.addEventListener('show.bs.collapse', function() { toggleIcon(payslipsSection, 'iconPayslips'); });
+                payslipsSection.addEventListener('hide.bs.collapse', function() { toggleIcon(payslipsSection, 'iconPayslips'); });
+                toggleIcon(payslipsSection, 'iconPayslips');
+              }
+              if (uploadSection && uploadIcon) {
+                uploadSection.addEventListener('show.bs.collapse', function() { toggleIcon(uploadSection, 'iconUpload'); });
+                uploadSection.addEventListener('hide.bs.collapse', function() { toggleIcon(uploadSection, 'iconUpload'); });
+                toggleIcon(uploadSection, 'iconUpload');
+              }
+            });
+          </script>
+          <div class="card-body">
+            <form method="post" action="{{ url_for('upload_payslip') }}" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="employee_id">Employee</label>
+                <select class="form-control" id="employee_id" name="employee_id" required>
+                  <option value="" disabled selected>Select an employee</option>
+                  {% for employee in employees %}
+                    <option value="{{ employee.id }}">{{ employee.first_name }} {{ employee.last_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="month_year">Month and Year</label>
+                <input type="month" class="form-control" id="month_year" name="month_year" required>
+              </div>
+              <div class="form-group">
+                <label for="payslip">Payslip File</label>
+                <input type="file" class="form-control-file" id="payslip" name="payslip" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="payslip">Payslip File</label>
-      <input type="file" class="form-control-file" id="payslip" name="payslip" required>
+    <div class="tab-pane fade" id="hr" role="tabpanel" aria-labelledby="hr-tab">
+      <p>WIP</p>
     </div>
-    <button type="submit" class="btn btn-primary">Upload</button>
-  </form>
+    <div class="tab-pane fade" id="others" role="tabpanel" aria-labelledby="others-tab">
+      <p>WIP</p>
+    </div>
+    <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">
+      <h3>All Users</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Is Admin</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in all_users %}
+            <tr>
+              <td>{{ user.id }}</td>
+              <td>{{ user.first_name }}</td>
+              <td>{{ user.last_name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.phone_number or 'N/A' }}</td>
+              <td>{{ 'Yes' if user.is_admin else 'No' }}</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#resetPasswordModal{{ user.id }}">
+                  Reset Password
+                </button>
+                <button type="button" class="btn btn-sm btn-danger ml-1" data-toggle="modal" data-target="#deleteUserModal{{ user.id }}">
+                  Delete
+                </button>
+                
+                <!-- Reset Password Modal -->
+                <div class="modal fade" id="resetPasswordModal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="resetPasswordModalLabel{{ user.id }}" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="resetPasswordModalLabel{{ user.id }}">Reset Password for {{ user.first_name }} {{ user.last_name }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <form method="post" action="{{ url_for('admin_reset_password', user_id=user.id) }}">
+                        <div class="modal-body">
+                          <div class="form-group">
+                            <label for="new_password{{ user.id }}">New Password</label>
+                            <input type="password" class="form-control" id="new_password{{ user.id }}" name="new_password" required>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                          <button type="submit" class="btn btn-primary">Reset Password</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Delete User Modal -->
+                <div class="modal fade" id="deleteUserModal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel{{ user.id }}" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="deleteUserModalLabel{{ user.id }}">Delete User {{ user.first_name }} {{ user.last_name }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <form method="post" action="{{ url_for('admin_delete_user', user_id=user.id) }}">
+                        <div class="modal-body">
+                          <p class="text-danger">Are you sure you want to delete user <strong>{{ user.first_name }} {{ user.last_name }}</strong>?</p>
+                          <p>This action cannot be undone. All associated payslips will also be deleted.</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                          <button type="submit" class="btn btn-danger">Delete User</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="6">No users found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 {% endblock %}

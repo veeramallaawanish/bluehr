@@ -1,8 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="jumbotron">
-    <h1 class="display-4">Welcome to BlueHR</h1>
-    <p class="lead">Your one-stop solution for HR needs.</p>
+  <div class="jumbotron py-3 mb-3" style="padding-top: 1rem !important; padding-bottom: 1rem !important; margin-bottom: 1rem !important;">
+    <h1 class="display-4" style="font-size:2rem;">Welcome to BlueHR</h1>
+    <p class="lead" style="font-size:1rem;">Your one-stop solution for HR needs.</p>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h2>Login</h2>
+      <form method="post">
+        <div class="form-group">
+          <label for="login_id">Email or Employee ID</label>
+          <input type="text" class="form-control w-50" style="max-width: 250px;" id="login_id" name="login_id" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control w-50" style="max-width: 250px;" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+      <p class="mt-3">
+        New user? <a href="{{ url_for('create_user') }}">Create an account</a>
+      </p>
+    </div>
   </div>
 {% endblock %}

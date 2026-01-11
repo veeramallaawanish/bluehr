@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="card mt-4" style="max-width: 400px; margin: 0 auto;">
+    <div class="card-body">
+      <h3 class="card-title mb-3">Account Details1</h3>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>First Name:</strong> {{ user.first_name }}</li>
+        <li class="list-group-item"><strong>Last Name:</strong> {{ user.last_name }}</li>
+        <li class="list-group-item"><strong>Employee ID:</strong> {{ user.employee_id }}</li>
+        <li class="list-group-item"><strong>Email ID:</strong> {{ user.email }}</li>
+        <li class="list-group-item"><strong>Phone Number:</strong> {{ user.phone_number }}</li>
+        <li class="list-group-item"><strong>Admin:</strong> {{ 'Yes' if user.is_admin else 'No' }}</li>
+        <li class="list-group-item"><strong>User ID:</strong> {{ user.id }}</li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}
